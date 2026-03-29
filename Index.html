@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Prova 🌙</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars-container" id="stars"></div>
+
+    <div class="card-wrapper">
+        <div id="layer1" class="layer active">
+            <div class="kitty-container">
+                <div class="kitty">🐱</div>
+                <div class="mystery-box" onclick="nextLayer(1)">🎁</div>
+            </div>
+            <h1 class="romantic-text">Happy Birthday, Prova!</h1>
+            <p class="sub-text">The kitty has a mystery for you. Click the box...</p>
+        </div>
+
+        <div id="layer2" class="layer">
+            <div class="chocolate-burst">
+                <span class="choco">🍫</span>
+                <span class="choco">✨</span>
+                <span class="choco">🍫</span>
+            </div>
+            <h2 class="romantic-text">A Sweet Surprise!</h2>
+            <p class="sub-text">Every chocolate is a wish for you. Click the chocolates to find the secret note.</p>
+            <div class="interact-area" onclick="nextLayer(2)">
+                <div class="floating-heart">💖</div>
+            </div>
+        </div>
+
+        <div id="layer3" class="layer">
+            <div class="final-kitty">🐾</div>
+            <h1 class="romantic-text">To My Bestie, Prova</h1>
+            <div class="message-scroll">
+                <p>In a world full of stars, you shine the brightest. May your year be as sweet as chocolate and as soft as a kitty's purr.</p>
+                <p>Stay magical, Prova. ✨</p>
+            </div>
+            <button class="retry-btn" onclick="location.reload()">See the Magic Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
