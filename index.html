@@ -1,48 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Prova 🌙</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>For My Prova ✨</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      background-color: #020617; 
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      perspective: 1000px;
+    }
+    
+    /* Starfield */
+    #starfield {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* CSS Moon */
+    .moon {
+      position: absolute;
+      top: 10%;
+      right: 15%;
+      width: 70px;
+      height: 70px;
+      background: #fdf6e3;
+      border-radius: 50%;
+      box-shadow: 0 0 40px #fdf6e3, inset -10px -10px 20px rgba(0,0,0,0.3);
+      z-index: 2;
+      transition: opacity 1s, transform 1.5s ease;
+    }
+
+    /* Cinematic White Flash */
+    #whiteFlash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    /* UI Container */
+    .container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 35px 25px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      z-index: 10;
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.3rem;
+      margin-bottom: 15px;
+      color: #f472b6;
+      letter-spacing: 1px;
+    }
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: #e2e8f0;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+      margin-bottom: 15px;
+    }
+    input[type="text"]:focus {
+      border: 1px solid #f472b6;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+      transition: transform 0.2s;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .error-msg {
+      color: #f87171;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    /* Sound Button Fallback */
+    #soundBtn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      z-index: 100;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Glowing Heart */
+    #glowingHeart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      background-color: #ec4899;
+      transform: translate(-50%, -50%) rotate(-45deg) scale(0);
+      z-index: 50;
+      pointer-events: none;
+      box-shadow: 0 0 50px 20px rgba(236, 72, 153, 0.6);
+      will-change: transform, opacity;
+      transition: transform 1s cubic-bezier(0.5, 0, 0.2, 1);
+    }
+    #glowingHeart::before,
+    #glowingHeart::after {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: #ec4899;
+      border-radius: 50%;
+      box-shadow: 0 0 50px 20px rgba(236, 72, 153, 0.4);
+    }
+    #glowingHeart::before { top: -50px; left: 0; }
+    #glowingHeart::after { top: 0; left: 50px; }
+    
+    .heart-blast {
+      transform: translate(-50%, -50%) rotate(-45deg) scale(35) !important;
+      opacity: 0.8;
+    }
+
+    .hidden { display: none !important; }
+    .fade-out { opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; }
+    .fade-in { animation: fadeIn 0.8s ease-in forwards; }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <div class="stars-container" id="stars"></div>
 
-    <div class="card-wrapper">
-        <div id="layer1" class="layer active">
-            <div class="kitty-container">
-                <div class="kitty">🐱</div>
-                <div class="mystery-box" onclick="nextLayer(1)">🎁</div>
-            </div>
-            <h1 class="romantic-text">Happy Birthday, Prova!</h1>
-            <p class="sub-text">The kitty has a mystery for you. Click the box...</p>
-        </div>
+  <!-- Using a reliable, direct MP3 source. Preload set to auto -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-a-very-happy-christmas-897.mp3" type="audio/mp3">
+  </audio>
 
-        <div id="layer2" class="layer">
-            <div class="chocolate-burst">
-                <span class="choco">🍫</span>
-                <span class="choco">✨</span>
-                <span class="choco">🍫</span>
-            </div>
-            <h2 class="romantic-text">A Sweet Surprise!</h2>
-            <p class="sub-text">Every chocolate is a wish for you. Click the chocolates to find the secret note.</p>
-            <div class="interact-area" onclick="nextLayer(2)">
-                <div class="floating-heart">💖</div>
-            </div>
-        </div>
+  <!-- Fallback Sound Button just in case browser strict policy blocks auto-play -->
+  <div id="soundBtn" onclick="forcePlayMusic()">Tap for Sound 🎵</div>
 
-        <div id="layer3" class="layer">
-            <div class="final-kitty">🐾</div>
-            <h1 class="romantic-text">To My Bestie, Prova</h1>
-            <div class="message-scroll">
-                <p>In a world full of stars, you shine the brightest. May your year be as sweet as chocolate and as soft as a kitty's purr.</p>
-                <p>Stay magical, Prova. ✨</p>
-            </div>
-            <button class="retry-btn" onclick="location.reload()">See the Magic Again</button>
-        </div>
-    </div>
+  <canvas id="starfield"></canvas>
+  <div class="moon" id="moon"></div>
+  <div id="whiteFlash"></div>
+  <div id="glowingHeart"></div>
 
-    <script src="script.js"></script>
+  <!-- STEP 1 -->
+  <div class="container" id="step1">
+    <h2>When did we first talk?</h2>
+    <p style="font-size: 0.85rem; color: #94a3b8;">Enter the date our journey started</p>
+    
+    <input type="text" id="dateInput" placeholder="DD/MM/YYYY" inputmode="numeric">
+    <button onclick="checkDate()">Open</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="container hidden" id="step2">
+    <h2>Hi Prova...</h2>
+    <p>
+      I haven't been able to give you a surprise gift in a really long time... I am so sorry 🥺 <br><br>
+      I know I have been very busy lately, so I made this little effort just for you 🥺
+    </p>
+    <button onclick="startDokkhozoggo()">Next ❤️</button>
+  </div>
+
+  <!-- FINAL MESSAGE -->
+  <div class="container hidden" id="step4">
+    <h2>For You, Always ❤️</h2>
+    <p>
+      You are the best thing that ever happened to me. Thank you for always being by my side, for understanding me, and for loving me even when I am busy. <br><br>
+      I love you so much! 
+    </p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    const bgMusic = document.getElementById('bgMusic');
+    const soundBtn = document.getElementById('soundBtn');
+    
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let stars = [];
+    let numStars = 250; 
+    let speed = 0.3; 
+    let isWarping = false;
+    let shootingStars = [];
+
+    // Init Stars
+    for(let i=0; i<numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width - canvas.width/2,
+        y: Math.random() * canvas.height - canvas.height/2,
+        z: Math.random() * canvas.width
+      });
+    }
+
+    function drawStars() {
+      let opacity = speed > 10 ? 0.4 : 0.8;
+      ctx.fillStyle = `rgba(2, 6, 23, ${opacity})`; 
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.translate(canvas.width/2, canvas.height/2);
+      
+      for(let i=0; i<numStars; i++) {
+        let star = stars[i];
+        star.z -= speed;
+        
+        if(star.z <= 0) {
+          star.z = canvas.width;
+          star.x = Math.random() * canvas.width - canvas.width/2;
+          star.y = Math.random() * canvas.height - canvas.height/2;
+        }
+        
+        let x = (star.x / star.z) * (canvas.width / 2);
+        let y = (star.y / star.z) * (canvas.width / 2);
+        let radius = (1 - star.z/canvas.width) * (speed > 5 ? 2.5 : 1.5);
+        
+        ctx.beginPath();
+        ctx.fillStyle = i % 5 === 0 ? "#f472b6" : "white"; 
+        
+        if (speed > 5) {
+          let prevX = (star.x / (star.z + speed * 1.5)) * (canvas.width / 2);
+          let prevY = (star.y / (star.z + speed * 1.5)) * (canvas.width / 2);
+          ctx.strokeStyle = ctx.fillStyle;
+          ctx.lineWidth = radius;
+          ctx.moveTo(prevX, prevY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        } else {
+          ctx.arc(x, y, radius, 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+
+      for(let i=shootingStars.length-1; i>=0; i--) {
+        let sh = shootingStars[i];
+        sh.x += sh.vx;
+        sh.y += sh.vy;
+        sh.life--;
+        
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.lineWidth = 2;
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(sh.x - sh.vx * 3, sh.y - sh.vy * 3);
+        ctx.stroke();
+        
+        if (sh.life <= 0) shootingStars.splice(i, 1);
+      }
+
+      ctx.translate(-canvas.width/2, -canvas.height/2);
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // FORCE MUSIC LOGIC
+    function forcePlayMusic() {
+      bgMusic.play().then(() => {
+        soundBtn.style.display = 'none'; // Hide button if music plays
+      }).catch(err => console.log(err));
+    }
+
+    function checkDate() {
+      let input = document.getElementById('dateInput').value.toLowerCase();
+      let errorMsg = document.getElementById('errorMsg');
+      
+      if(input.includes('jan') || input.includes('january')) {
+        input = input.replace(/january|jan/g, '1');
+      }
+
+      let numbersOnly = input.replace(/\D/g, ''); 
+      const validDates = ['31012026', '3112026', '310126', '31126'];
+
+      if (validDates.includes(numbersOnly)) {
+        
+        // Try playing music on first click
+        bgMusic.play().catch(() => {
+          soundBtn.style.display = 'block'; // Show hint if browser blocks it
+        });
+        
+        document.getElementById('step1').classList.add('fade-out');
+        setTimeout(() => {
+          document.getElementById('step1').classList.add('hidden');
+          let step2 = document.getElementById('step2');
+          step2.classList.remove('hidden');
+          step2.classList.add('fade-in');
+        }, 600);
+      } else {
+        errorMsg.innerText = "Oops! That's not the right date 🥺 Try again!";
+      }
+    }
+
+    // 5-SECOND FAST CINEMATIC RAMP
+    function startDokkhozoggo() {
+      // 1. Hide Box & Moon
+      document.getElementById('step2').classList.add('fade-out');
+      document.getElementById('moon').style.transform = 'translateY(-200px)'; 
+      document.getElementById('moon').style.opacity = '0';
+      
+      // Attempt play again just in case
+      bgMusic.play().catch(()=>{});
+      soundBtn.style.display = 'none'; // Hide sound button during animation
+
+      setTimeout(() => {
+        document.getElementById('step2').classList.add('hidden');
+        
+        // 2. Heart Blowup (Faster)
+        let heart = document.getElementById('glowingHeart');
+        heart.classList.add('heart-blast');
+        
+        setTimeout(() => {
+          heart.style.opacity = '0'; 
+          
+          // 3. START FAST TRAVEL (5 Seconds total)
+          isWarping = true;
+          speed = 40; // Immediate blast
+          
+          let shootInterval = setInterval(() => {
+            if(Math.random() > 0.4) {
+              shootingStars.push({
+                x: Math.random() * canvas.width - canvas.width/2,
+                y: -canvas.height/2,
+                vx: (Math.random() - 0.5) * 10,
+                vy: Math.random() * 20 + 10,
+                life: 60
+              });
+            }
+          }, 100);
+
+          // 4. Slow-Mo Effect at 2 seconds
+          setTimeout(() => {
+            let slowInterval = setInterval(() => {
+              if (speed > 5) speed -= 5;
+            }, 50);
+            
+            // 5. Final Blast & Flash at 4.5 seconds
+            setTimeout(() => {
+              clearInterval(slowInterval);
+              speed = 70; // Final hit
+              
+              setTimeout(() => {
+                clearInterval(shootInterval);
+                let flash = document.getElementById('whiteFlash');
+                flash.style.opacity = '1'; // Screen turns white
+                
+                setTimeout(() => {
+                  speed = 0.5; // Back to ambient space
+                  flash.style.opacity = '0'; // Reveal
+                  
+                  document.getElementById('moon').style.transform = 'translateY(0)';
+                  document.getElementById('moon').style.opacity = '1';
+                  
+                  let step4 = document.getElementById('step4');
+                  step4.classList.remove('hidden');
+                  step4.classList.add('fade-in');
+                  
+                }, 500); // 0.5 sec flash duration
+                
+              }, 500); // Wait 0.5s at final speed
+
+            }, 2000); // Wait 2s in slow-mo
+
+          }, 2000); // Wait 2s in initial fast speed
+          
+        }, 800); // Wait for heart blast (0.8s)
+        
+      }, 600); // Wait for fade out
+    }
+  </script>
 </body>
 </html>
